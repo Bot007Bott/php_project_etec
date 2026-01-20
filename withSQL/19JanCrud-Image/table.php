@@ -31,21 +31,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>Coca</td>
-                    <td>5</td>
-                    <td>$1.25</td>
-                    <td>$6.25</td>
-                    <td>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9nZpuFMt-VMpXyLDujmNNArAR2mGsXLRfXw&s" width="30" height="30" class="rounded-4" alt="cocaImage">
-                    </td>
-                    <td>
-                        <button name="btnDelete" class="btn btn-danger">Delete</button>
-                        <button name="btnEdit" class="btn btn-warning">Edit</button>
-                    </td>
-
-                </tr>
+                <?php 
+                    require 'connection.php';
+                    $select = "SELECT * FROM tbl_product";
+                    $execute = mysqli_query($conn, $select);
+                    while ($row = mysqli_fetch_assoc($execute)) {
+                        echo '
+                            <tr>
+                                <td>'.$row['id'].'</td>
+                                <td>'.$row['product_name'].'</td>
+                                <td>'.$row['qty'].'</td>
+                                <td>$ '.$row['price'].'</td>
+                                <td>$ '.$row['total'].'</td>
+                                <td>
+                                    <img src="image/'.$row['image'].'" width="40" height="40" class="rounded-circle" alt="error">
+                                </td>
+                                <td>
+                                    <button name="btnDelete" class="btn btn-danger">Delete</button>
+                                    <button name="btnEdit" class="btn btn-warning">Edit</button>
+                                </td>
+                            </tr>
+                        ';
+                    }
+                ?>
             </tbody>
         </table>
 
@@ -54,33 +62,33 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="" method="post">
+                        <form action="insert.php" method="post" enctype="multipart/form-data">
                             <div class="mb-2">
                                 <label for="pro_name" class="form-label">Product Name</label>
                                 <input name="pro_name" id="pro_name" type="text" class="form-control" placeholder="Enter Product's Name">
                             </div>
                             <div class="mb-2">
-                                <label for="qty" class="form-label">Price</label>
+                                <label for="qty" class="form-label">Quantity</label>
                                 <input name="qty" id="qty" type="number" class="form-control" placeholder="Enter Product's Quantity">
                             </div>
                             <div class="mb-2">
                                 <label for="price" class="form-label">Price</label>
-                                <input name="price" id="price" type="number" class="form-control" placeholder="Enter Product's Quantity">
+                                <input name="price" id="price" type="number" step="0.01" class="form-control" placeholder="Enter Product's Price">
                             </div>
                             <div class="mb-2">
                                 <label for="" class="form-label">Image</label> <br>
                                 <img src="https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg?fbclid=IwY2xjawPVdkRicmlkETF2eURLdXBNMzdFdVQxRWs4c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHtcVyVV6QPKU0MhVVf6Lzj88UZygOqqNXeX09F0I49cQK3YW5nmVXPPXuuvU&brid=hDzoxEA0DX3u-fN9UIGWNg" alt="emptyPic" width="110" height="110" class="rounded-circle" id="image">
-                                <input type="file" id="file" class="form-control">
+                                <input type="file" name="file" id="file" class="form-control">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success" name="btnSubmit">Save</button>
                             </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
@@ -93,16 +101,16 @@
 </html>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('#file').hide();
-        $('#image').click(function(){
+        $('#image').click(function() {
             $('#file').click()
         })
-        $('#file').change(function(){
+        $('#file').change(function() {
             let file = this.files[0];
-            if(file) {
+            if (file) {
                 let image = URL.createObjectURL(file);
-                $('#image').attr('src',image);
+                $('#image').attr('src', image);
             }
         })
     })
