@@ -14,7 +14,7 @@
 
     <div class="container mt-4 p-5 w-75 shadow rounded-3">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-hover btn-dark float-end mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-hover btn-dark float-end mb-3" id="addProductBtn" data-bs-toggle="modal" data-bs-target="#productModal">
             + Add Product
         </button>
 
@@ -31,58 +31,73 @@
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                    require 'connection.php';
-                    $select = "SELECT * FROM tbl_product";
-                    $execute = mysqli_query($conn, $select);
-                    while ($row = mysqli_fetch_assoc($execute)) {
-                        echo '
+                <?php
+                require 'connection.php';
+                $select = "SELECT * FROM tbl_product";
+                $execute = mysqli_query($conn, $select);
+                while ($row = mysqli_fetch_assoc($execute)) {
+                    echo '
                             <tr>
-                                <td>'.$row['id'].'</td>
-                                <td>'.$row['product_name'].'</td>
-                                <td>'.$row['qty'].'</td>
-                                <td>$ '.$row['price'].'</td>
-                                <td>$ '.$row['total'].'</td>
+                                <td>' . $row['id'] . '</td>
+                                <td>' . $row['product_name'] . '</td>
+                                <td>' . $row['qty'] . '</td>
+                                <td>$ ' . $row['price'] . '</td>
+                                <td>$ ' . $row['total'] . '</td>
                                 <td>
-                                    <img src="image/'.$row['image'].'" width="40" height="40" class="rounded-circle" alt="error">
+                                    <img src="image/' . $row['image'] . '" width="40" height="40" class="rounded-circle" alt="error">
                                 </td>
                                 <td>
-                                    <button name="btnDelete" class="btn btn-danger">Delete</button>
-                                    <button name="btnEdit" class="btn btn-warning">Edit</button>
+                                    <div class="d-flex gap-3 justify-content-center">
+                                        <form action="delete.php" method="post">
+                                            <input type="hidden" name="id" value="' . $row['id'] . '">
+                                            <button name="btnDelete" onclick="return confirm(\'Are you sure you want to delete this?\');" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        <button name="btnEdit" class="btn btn-warning" name="btnEdit" data-id="' . $row['id'] . '"
+                                                data-name="' . $row['product_name'] . '"
+                                                data-qty="' . $row['qty'] . '"
+                                                data-price="' . $row['price'] . '"
+                                                data-image="' . $row['image'] . '"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#productModal" >Edit</button>
+                                    </div>             
                                 </td>
                             </tr>
                         ';
-                    }
+                }
                 ?>
             </tbody>
         </table>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <!-- Modal for Add/Edit -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product</h1>
+                        <h1 class="modal-title fs-5" id="ModalLabel">Add Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="insert.php" method="post" enctype="multipart/form-data">
+                        <form id="productForm" action="insert.php" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="product_id" id="product_id">
                             <div class="mb-2">
                                 <label for="pro_name" class="form-label">Product Name</label>
-                                <input name="pro_name" id="pro_name" type="text" class="form-control" placeholder="Enter Product's Name">
+                                <input name="pro_name" id="pro_name" type="text" class="form-control" placeholder="Enter Product's Name" required>
                             </div>
                             <div class="mb-2">
                                 <label for="qty" class="form-label">Quantity</label>
-                                <input name="qty" id="qty" type="number" class="form-control" placeholder="Enter Product's Quantity">
+                                <input name="qty" id="qty" type="number" class="form-control" placeholder="Enter Product's Quantity" required min="1">
                             </div>
                             <div class="mb-2">
                                 <label for="price" class="form-label">Price</label>
-                                <input name="price" id="price" type="number" step="0.01" class="form-control" placeholder="Enter Product's Price">
+                                <input name="price" id="price" type="number" step="0.01" class="form-control" placeholder="Enter Product's Price" required min="0">
                             </div>
                             <div class="mb-2">
                                 <label for="" class="form-label">Image</label> <br>
                                 <img src="https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg?fbclid=IwY2xjawPVdkRicmlkETF2eURLdXBNMzdFdVQxRWs4c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHtcVyVV6QPKU0MhVVf6Lzj88UZygOqqNXeX09F0I49cQK3YW5nmVXPPXuuvU&brid=hDzoxEA0DX3u-fN9UIGWNg" alt="emptyPic" width="110" height="110" class="rounded-circle" id="image">
                                 <input type="file" name="file" id="file" class="form-control">
+                                <!-- Hidden input to store current image name when editing -->
+                                <input type="hidden" name="current_image" id="current_image">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -114,4 +129,35 @@
             }
         })
     })
+
+    //when add product button is clicked
+    $('#addProductBtn').click(function() {
+        //reset form for adding new product
+        $('#productForm')[0].reset();
+        $('#product_id').val('');
+        $('#current_image').val('');
+        $('#modalTitle').text('Add Product');
+        $('#submitBtn').text('Save Product');
+        $('#image').attr('src', 'https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg');
+        $('#productForm').attr('action', 'insert.php');
+    });
+
+    // When Edit button is clicked
+    $(document).on('click', 'button[name="btnEdit"]', function() {
+        let productId = $(this).data('id');
+        let productName = $(this).data('name');
+        let productQty = $(this).data('qty');
+        let productPrice = $(this).data('price');
+        let productImage = $(this).data('image');
+
+        $('#product_id').val(productId);
+        $('#pro_name').val(productName);
+        $('#qty').val(productQty);
+        $('#price').val(productPrice);
+        $('#current_image').val(productImage); 
+        $('#image').attr('src', 'image/' + productImage);
+        $('#modalTitle').text('Edit Product');
+        $('#submitBtn').text('Update Product');
+        $('#productForm').attr('action', 'update.php');
+    });
 </script>
