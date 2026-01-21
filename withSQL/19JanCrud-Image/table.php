@@ -74,7 +74,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="ModalLabel">Add Product</h1>
+                        <h1 class="modal-title fs-5" id="modalTitle">Add Product</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -101,7 +101,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success" name="btnSubmit">Save</button>
+                                <button type="submit" class="btn btn-success" id="btnSubmit" name="btnSubmit">Save</button>
                             </div>
                         </form>
                     </div>
@@ -137,7 +137,7 @@
         $('#product_id').val('');
         $('#current_image').val('');
         $('#modalTitle').text('Add Product');
-        $('#submitBtn').text('Save Product');
+        $('#btnSubmit').text('Save Product');
         $('#image').attr('src', 'https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg');
         $('#productForm').attr('action', 'insert.php');
     });
@@ -157,7 +157,7 @@
         $('#current_image').val(productImage); 
         $('#image').attr('src', 'image/' + productImage);
         $('#modalTitle').text('Edit Product');
-        $('#submitBtn').text('Update Product');
+        $('#btnSubmit').text('Update Product');
         $('#productForm').attr('action', 'update.php');
     });
 </script>
