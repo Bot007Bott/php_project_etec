@@ -7,7 +7,7 @@ if(isset($_POST['btnSubmit'])) {
     $pro_name = $_POST['pro_name'];
     $qty = $_POST['qty'];
     $price = $_POST['price'];
-    $total = $qty*$price;
+    $total = $qty * $price;
     $file = $_FILES['file']['name'];
     $tmp_name = $_FILES['file']['tmp_name'];
     $path = 'image/'.$file;

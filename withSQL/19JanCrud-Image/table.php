@@ -40,7 +40,7 @@
                             <tr>
                                 <td>' . $row['id'] . '</td>
                                 <td>' . $row['product_name'] . '</td>
-                                <td>' . $row['qty'] . '</td>
+                                <td>' . $row['qty'] . '</td>            
                                 <td>$ ' . $row['price'] . '</td>
                                 <td>$ ' . $row['total'] . '</td>
                                 <td>
@@ -50,9 +50,9 @@
                                     <div class="d-flex gap-3 justify-content-center">
                                         <form action="delete.php" method="post">
                                             <input type="hidden" name="id" value="' . $row['id'] . '">
-                                            <button name="btnDelete" onclick="return confirm(\'Are you sure you want to delete this?\');" class="btn btn-danger">Delete</button>
+                                            <button name="btnDelete" onclick="return confirm(\'Are you sure you want to delete this?\');" class="btn btn-outline-danger">Delete</button>
                                         </form>
-                                        <button name="btnEdit" class="btn btn-warning" name="btnEdit" data-id="' . $row['id'] . '"
+                                        <button name="btnEdit" class="btn btn-outline-warning" name="btnEdit" data-id="' . $row['id'] . '"
                                                 data-name="' . $row['product_name'] . '"
                                                 data-qty="' . $row['qty'] . '"
                                                 data-price="' . $row['price'] . '"
@@ -93,8 +93,8 @@
                                 <input name="price" id="price" type="number" step="0.01" class="form-control" placeholder="Enter Product's Price" required min="0">
                             </div>
                             <div class="mb-2">
-                                <label for="" class="form-label">Image</label> <br>
-                                <img src="https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg?fbclid=IwY2xjawPVdkRicmlkETF2eURLdXBNMzdFdVQxRWs4c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHtcVyVV6QPKU0MhVVf6Lzj88UZygOqqNXeX09F0I49cQK3YW5nmVXPPXuuvU&brid=hDzoxEA0DX3u-fN9UIGWNg" alt="emptyPic" width="110" height="110" class="rounded-circle" id="image">
+                                <label for="image" class="form-label">Image</label> <br>
+                                <img src="https://i.pinimg.com/736x/9d/16/4e/9d164e4e074d11ce4de0a508914537a8.jpg?fbclid=IwY2xjawPVdkRicmlkETF2eURLdXBNMzdFdVQxRWs4c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHtcVyVV6QPKU0MhVVf6Lzj88UZygOqqNXeX09F0I49cQK3YW5nmVXPPXuuvU&brid=hDzoxEA0DX3u-fN9UIGWNg" alt="emptyPic" width="110" height="110" class="rounded-circle" id="image" style="cursor: pointer;">
                                 <input type="file" name="file" id="file" class="form-control">
                                 <!-- Hidden input to store current image name when editing -->
                                 <input type="hidden" name="current_image" id="current_image">
