@@ -130,9 +130,7 @@
         })
     })
 
-    //when add product button is clicked
     $('#addProductBtn').click(function() {
-        //reset form for adding new product
         $('#productForm')[0].reset();
         $('#product_id').val('');
         $('#current_image').val('');
@@ -142,7 +140,6 @@
         $('#productForm').attr('action', 'insert.php');
     });
 
-    // When Edit button is clicked
     $(document).on('click', 'button[name="btnEdit"]', function() {
         let productId = $(this).data('id');
         let productName = $(this).data('name');
