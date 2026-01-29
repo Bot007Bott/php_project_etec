@@ -13,4 +13,8 @@ if(isset($_SERVER['REQUEST_METHOD']) == 'POST') {
 
     $insert = "INSERT INTO tbl_student (name,gender,profile) VALUES ('$name','$gender','$path')";
     $ex = $conn->query($insert);
+
+    if($ex) {
+        echo "Insert Student Successfully!";
+    }
 }

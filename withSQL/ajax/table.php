@@ -51,14 +51,14 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="insert.php" method="post" enctype="multipart/form-data">
+                            <form id="form" action="insert.php" method="post" enctype="multipart/form-data">
                                 <div class="mb-2">
                                     <label for="username" class="form-label">Username</label>
-                                    <input type="text" name="username" class="form-control" placeholder="Enter your Username" required>
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your Username" required>
                                 </div>
                                 <div class="mb-2">
                                     <label for="gender" class="form-label">Gender</label>
-                                    <select name="gender" id="" class="form-select" required>
+                                    <select name="gender" id="gender" class="form-select" required>
                                         <option value="" selected disabled>---Gender---</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -66,13 +66,13 @@
                                 </div>
                                 <div class="mb-2">
                                     <label for="file" class="form-label">Profile</label>
-                                    <input type="file" name="file" class="form-control" required>
+                                    <input type="file" name="file" id="file" class="form-control" required>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="add" data-bs-dismiss="modal">Add</button>
                         </div>
                     </div>
                 </div>
@@ -83,3 +83,28 @@
 </body>
 
 </html>
+
+<script>
+    $(document).ready(function() {
+        $('#add').click(function() {
+            const username = $('#username').val();
+            const gender = $('#gender').val();
+            const file = $('#file')[0].files[0];
+            let formdata = new FormData();
+            formdata.append('username', username);
+            formdata.append('gender', gender);
+            formdata.append('file', file);
+            $.ajax({
+                url: 'insert.php',
+                method: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#form').trigger('reset');
+                    alert(response);
+                }
+            })
+        })
+    })
+</script>
