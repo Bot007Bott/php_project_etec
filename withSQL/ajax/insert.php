@@ -14,7 +14,8 @@ if(isset($_SERVER['REQUEST_METHOD']) == 'POST') {
     $insert = "INSERT INTO tbl_student (name,gender,profile) VALUES ('$name','$gender','$path')";
     $ex = $conn->query($insert);
 
-    if($ex) {
-        echo "Insert Student Successfully!";
-    }
+    $select_id = "SELECT id FROM tbl_student ORDER BY id DESC LIMIT 1";
+    $rs = $conn->query($select_id);
+    $row = mysqli_fetch_assoc($rs);
+    echo $row['id'];
 }

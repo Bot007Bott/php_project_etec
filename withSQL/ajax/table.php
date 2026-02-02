@@ -28,18 +28,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>Dara</td>
-                    <td>Male</td>
-                    <td>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG5MFQeQueZnq67u1pk5ltllNKsT3WI3WZpQU1SAj1253E-c5p2PdngCUWxkx0hL889fxM0Bbz9UVsj4LeCykHkIVVFpe4WzjiF989LA&s=10" width="40" height="40" class="rounded-circle" alt="">
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-outline-danger">Delete</button>
-                        <button type="button" class="btn btn-outline-warning">Edit</button>
-                    </td>
-                </tr>
+                <?php
+                    require 'conn.php';
+                    $select = "SELECT * FROM tbl_student";
+                    $ex = $conn->query($select);
+                    while($row=mysqli_fetch_assoc($ex)) {
+                        echo '
+                            <tr>
+                                <td>'.$row['id'].'</td>
+                                <td>'.$row['name'].'</td>
+                                <td>'.$row['gender'].'</td>
+                                <td>
+                                    <img src="'.$row['profile'].'" width="40" height="40" class="rounded-circle" alt="">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                                    <button type="button" class="btn btn-outline-warning">Edit</button>
+                                </td>
+                            </tr>
+                        ';
+                    } 
+                ?>
             </tbody>
 
             <!-- Modal -->
@@ -90,6 +99,8 @@
             const username = $('#username').val();
             const gender = $('#gender').val();
             const file = $('#file')[0].files[0];
+            const imgURL = URL.createObjectURL(file);
+
             let formdata = new FormData();
             formdata.append('username', username);
             formdata.append('gender', gender);
@@ -102,7 +113,20 @@
                 processData: false,
                 success: function(response) {
                     $('#form').trigger('reset');
-                    alert(response);
+                    $('tbody').append(`
+                        <tr>
+                            <td>${response}</td>
+                            <td>${username}</td>
+                            <td>${gender}</td>
+                            <td>
+                                <img src="${imgURL}" width="40" height="40" class="rounded-circle" alt="">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger">Delete</button>
+                                <button type="button" class="btn btn-outline-warning">Edit</button>
+                            </td>
+                        </tr>
+                    `);
                 }
             })
         })
