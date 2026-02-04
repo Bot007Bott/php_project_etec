@@ -14,7 +14,7 @@
 
     <div class="container mt-5 p-4 shadow rounded-3">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-dark mb-4 float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id="add" class="btn btn-outline-dark mb-4 float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
             + Add Student
         </button>
         <table class="table table-hover text-center">
@@ -29,25 +29,25 @@
             </thead>
             <tbody>
                 <?php
-                    require 'conn.php';
-                    $select = "SELECT * FROM tbl_student";
-                    $ex = $conn->query($select);
-                    while($row=mysqli_fetch_assoc($ex)) {
-                        echo '
+                require 'conn.php';
+                $select = "SELECT * FROM tbl_student";
+                $ex = $conn->query($select);
+                while ($row = mysqli_fetch_assoc($ex)) {
+                    echo '
                             <tr>
-                                <td>'.$row['id'].'</td>
-                                <td>'.$row['name'].'</td>
-                                <td>'.$row['gender'].'</td>
+                                <td>' . $row['id'] . '</td>
+                                <td>' . $row['name'] . '</td>
+                                <td>' . $row['gender'] . '</td>
                                 <td>
-                                    <img src="'.$row['profile'].'" width="40" height="40" class="rounded-circle" alt="">
+                                    <img src="' . $row['profile'] . '" width="40" height="40" class="rounded-circle" alt="">
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-danger">Delete</button>
-                                    <button type="button" class="btn btn-outline-warning">Edit</button>
+                                    <button type="button" class="btn btn-outline-danger" id="delete">Delete</button>
+                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" id="edit">Edit</button>
                                 </td>
                             </tr>
                         ';
-                    } 
+                }
                 ?>
             </tbody>
 
@@ -60,7 +60,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="form" action="insert.php" method="post" enctype="multipart/form-data">
+                            <form id="form" action="" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id" id="id">
                                 <div class="mb-2">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" id="username" name="username" class="form-control" placeholder="Enter your Username" required>
@@ -81,7 +82,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="add" data-bs-dismiss="modal">Add</button>
+                            <button type="button" class="btn btn-primary" id="save" data-bs-dismiss="modal">Add</button>
+                            <button type="button" class="btn btn-success" id="update" data-bs-dismiss="modal">Update</button>
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,14 @@
 
 <script>
     $(document).ready(function() {
+
         $('#add').click(function() {
+            $('#update').hide();
+            $('#save').show();
+            $('#exampleModalLabel').text('Add Student');
+        })
+
+        $('#save').click(function() {
             const username = $('#username').val();
             const gender = $('#gender').val();
             const file = $('#file')[0].files[0];
@@ -129,6 +138,75 @@
                     `);
                 }
             })
+        })
+
+        $(document).on('click', '#edit', function() {
+            $('#update').show();
+            $('#save').hide();
+            $('#exampleModalLabel').text('Update Student');
+            const row = $(this).closest('tr');
+            const id = row.find('td:eq(0)').text().trim();
+            const username = row.find('td:eq(1)').text().trim();
+            const gender = row.find('td:eq(2)').text().trim();
+            $('#id').val(id);
+            $('#username').val(username);
+            $('#gender').val(gender);
+        });
+
+        $('#update').click(function() {
+            const id = $('#id').val();
+            const username = $('#username').val();
+            const gender = $('#gender').val();
+            const file = $('#file')[0].files[0];
+
+            let formdata = new FormData();
+            formdata.append('id', id);
+            formdata.append('username', username);
+            formdata.append('gender', gender);
+
+            let imgURL = null;
+
+            if (file) {
+                imgURL = URL.createObjectURL(file);
+                formdata.append('file', file);
+            }
+
+            $.ajax({
+                url: 'update.php',
+                method: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function() {
+                    $('tbody tr').each(function() {
+                        if ($(this).find('td:eq(0)').text().trim() == id) {
+                            $(this).find('td:eq(1)').text(username);
+                            $(this).find('td:eq(2)').text(gender);
+                            if (imgURL) {
+                                $(this).find('td:eq(3) img').attr('src', imgURL);
+                            }
+                        }
+                    });
+                    $('#form').trigger('reset');
+                }
+            })
+        });
+
+        $(document).on('click','#delete',function(){
+            if(!confirm("Are you sure?")) return ;
+            const row = $(this).closest('tr');
+            const id = row.find('td:first').text().trim();
+            const formdata = new FormData();
+            formdata.append('id', id);
+            $.ajax({
+                url:'delete.php',
+                method: 'POST',
+                data: {id},
+                success:function() {
+                    row.remove();
+                }
+            })
+            
         })
     })
 </script>
